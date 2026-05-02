@@ -188,6 +188,33 @@ nav {
   transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
 }
+/* Le nouveau bouton "Secondaire" (Contours bleus) */
+.nav-links a.btn-secondary {
+  background-color: transparent; /* Fond transparent */
+  color: var(--accent-color); /* Texte bleu */
+  border: 2px solid var(--accent-color); /* Bordure bleue */
+  padding: 0.5rem 1rem;
+  border-radius: 4px; /* Mets 8px si ton bouton CV a un arrondi de 8px */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* Espace entre l'icône et le texte */
+}
+
+/* Effet au passage de la souris pour le bouton secondaire */
+.nav-links a.btn-secondary:hover {
+  background-color: var(--accent-light); /* Fond bleu très clair */
+  transform: translateY(-2px); /* Se soulève légèrement */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Ajout d'un petit espace pour l'icône du bouton CV s'il n'en avait pas */
+.nav-links a.btn-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
 .nav-links a.btn-cv:hover {
   background-color: #1d4ed8;
