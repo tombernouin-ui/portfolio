@@ -1,13 +1,20 @@
+/* ==========================================
+   1. VARIABLES & PALETTE "PREMIUM SISR"
+   ========================================== */
 :root {
-  --bg-color: #f8f9fa;
+  /* Palette de couleurs */
+  --bg-color: #f8fafc;
   --surface-color: #ffffff;
-  --text-primary: #333333;
-  --text-secondary: #555555;
-  --accent-color: #1e3a8a;
-  /* Navy blue / Bleu marine */
+  --text-primary: #0f172a; /* Gris Ardoise très foncé */
+  --text-secondary: #64748b; /* Gris bleuté doux */
+  --accent-color: #2563eb; /* Bleu pro */
   --accent-light: #eff6ff;
-  /* Très gris/bleu clair */
-  --border-color: #e5e7eb;
+  --border-color: #e2e8f0;
+  
+  /* Ombres modernes */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 24px rgba(15, 23, 42, 0.08);
 }
 
 * {
@@ -17,20 +24,120 @@
   font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  line-height: 1.6;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Header & Navigation */
+/* ==========================================
+   2. FOND ANIMÉ & FORMES ABSTRAITES (BODY)
+   ========================================== */
+
+/* On configure le body pour accueillir les formes en fond */
+body.premium-bg {
+  position: relative;
+  overflow-x: hidden; /* Empêche les formes de créer une barre de défilement horizontale */
+  background-color: var(--bg-color); /* Couleur de base par défaut */
+  min-height: 100vh;
+}
+
+/* Le conteneur des formes */
+.background-blobs {
+  position: fixed; /* Reste fixe même quand on scrolle */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Se place derrière tout le contenu */
+  overflow: hidden;
+  /* On garde ton ancien dégradé animé en fond de base */
+  background: linear-gradient(-45deg, #f8fafc, #eff6ff, #e2e8f0, #e0f2fe);
+  background-size: 400% 400%;
+  animation: gradientSubtil 15s ease infinite;
+  opacity: 0.6; /* Rend le tout très discret */
+}
+
+/* Style commun aux 3 bulles (blobs) */
+.blob {
+  position: absolute;
+  background: var(--accent-color); /* Utilise ton bleu marine */
+  border-radius: 50%; /* Base ronde */
+  filter: blur(80px); /* Le secret : un flou énorme pour l'effet "nuage" */
+  opacity: 0.2; /* Très transparents */
+  animation: moveBlobs 25s infinite alternate ease-in-out; /* Animation lente */
+}
+
+/* Configuration unique de chaque bulle (taille, couleur, position départ) */
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  top: -100px;
+  left: -100px;
+  background: #60a5fa; /* Bleu plus clair */
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 600px;
+  height: 600px;
+  bottom: -150px;
+  right: -100px;
+  background: var(--accent-color); /* Ton bleu marine */
+  animation-delay: -5s; /* Commence l'animation en décalé */
+}
+
+.blob-3 {
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  left: 50%;
+  background: #c7d2fe; /* Violet très clair pour le relief */
+  animation-delay: -10s;
+}
+
+/* --- ANIMATIONS --- */
+
+/* L'ancien dégradé de base */
+@keyframes gradientSubtil {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* La nouvelle animation de mouvement des bulles (translation + rotation) */
+@keyframes moveBlobs {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, 50px) rotate(10deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(-10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+
+@keyframes gradientSubtil {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================
+   3. HEADER & NAVIGATION (Glassmorphism)
+   ========================================== */
 header {
-  background-color: var(--surface-color);
-  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 nav {
@@ -43,23 +150,28 @@ nav {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--accent-color);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--accent-color);
 }
 
 .nav-links {
   display: flex;
   gap: 2rem;
+  align-items: center;
 }
 
 .nav-links a {
   text-decoration: none;
   color: var(--text-secondary);
   font-weight: 500;
-  transition: color 0.3s;
+  transition: all 0.3s ease;
   font-size: 0.95rem;
 }
 
@@ -70,119 +182,143 @@ nav {
 .nav-links a.btn-cv {
   background-color: var(--accent-color);
   color: var(--surface-color);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
   font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-  display: inline-flex;
-  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-links a.btn-cv:hover {
-  background-color: #152c6b;
+  background-color: #1d4ed8;
   color: var(--surface-color);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Conteneur principal */
+/* ==========================================
+   4. STRUCTURE PRINCIPALE
+   ========================================== */
 main {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem;
 }
 
 section {
-  margin-bottom: 6rem;
+  margin-bottom: 7rem;
   scroll-margin-top: 6rem;
-  /* Pour compenser le header fixe */
-}
-
-h1,
-h2,
-h3 {
-  color: var(--text-primary);
 }
 
 h2 {
-  font-size: 1.75rem;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid var(--accent-color);
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
+  color: var(--text-primary);
+  position: relative;
   display: inline-block;
-  padding-bottom: 0.5rem;
+  border: none;
 }
 
-/* Section Hero */
+h2::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 40px;
+  height: 4px;
+  background-color: var(--accent-color);
+  border-radius: 2px;
+}
+
+/* ==========================================
+   5. SECTION HERO (Accueil)
+   ========================================== */
 .hero {
   text-align: center;
-  padding: 6rem 0;
+  padding: 7rem 0 5rem;
 }
 
 .availability-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  background-color: #0a0f1a;
-  color: #6eb384;
-  font-weight: 600;
+  background-color: var(--surface-color);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  font-weight: 500;
   font-size: 0.95rem;
-  padding: 0.5rem 1.25rem 0.5rem 0.75rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 999px;
   margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .availability-badge .dot {
   width: 10px;
   height: 10px;
-  background-color: #6eb384;
+  background-color: #10b981;
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #264a36;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 .hero h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
   color: var(--text-primary);
   letter-spacing: -1px;
 }
 
 .hero p.subtitle {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: var(--accent-color);
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .hero p.desc {
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   color: var(--text-secondary);
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
 }
 
-/* Grilles pour Cartes */
+/* ==========================================
+   6. CARTES (Réalisations)
+   ========================================== */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
 }
 
 .card {
   background: var(--surface-color);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(37, 99, 235, 0.3);
 }
 
 .card h3 {
   margin-bottom: 1rem;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
 }
 
 .card p {
@@ -191,7 +327,6 @@ h2 {
   font-size: 0.95rem;
 }
 
-/* Badges Technos */
 .badges {
   display: flex;
   flex-wrap: wrap;
@@ -201,35 +336,40 @@ h2 {
 .badge {
   background: var(--accent-light);
   color: var(--accent-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
-/* Tableau Référentiel */
+/* ==========================================
+   7. TABLEAU (Référentiel)
+   ========================================== */
 .skills-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--surface-color);
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
 }
 
 .skills-table th,
 .skills-table td {
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
 }
 
 .skills-table th {
-  background-color: var(--bg-color);
+  background-color: #f1f5f9;
   color: var(--text-primary);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .skills-table tr:last-child td {
@@ -239,57 +379,71 @@ h2 {
 .progress-bar {
   background: var(--border-color);
   border-radius: 999px;
-  height: 6px;
+  height: 8px;
   width: 100%;
   overflow: hidden;
 }
 
 .progress {
-  background: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent-color), #60a5fa);
   height: 100%;
   border-radius: 999px;
 }
 
-/* Liste des Procédures */
+/* ==========================================
+   8. LISTE DES PROCÉDURES
+   ========================================== */
 .proc-list {
   list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .proc-list li {
   background: var(--surface-color);
-  margin-bottom: 1rem;
-  padding: 1.25rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
 
 .proc-list li:hover {
-  background: var(--accent-light);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
   border-color: var(--accent-color);
 }
 
 .proc-list a {
   text-decoration: none;
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
   width: 100%;
+  padding: 1.25rem;
 }
 
 .proc-list i {
   color: var(--accent-color);
-  margin-right: 1rem;
-  font-size: 1.25rem;
+  background: var(--accent-light);
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  margin-right: 1.25rem;
+  font-size: 1.2rem;
 }
 
-/* Footer */
+/* ==========================================
+   9. FOOTER
+   ========================================== */
 footer {
   background-color: var(--surface-color);
   border-top: 1px solid var(--border-color);
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
   text-align: center;
 }
 
@@ -311,23 +465,72 @@ footer a:hover {
   margin-bottom: 1.5rem;
 }
 
-/* Responsive */
+/* ==========================================
+   10. RESPONSIVE
+   ========================================== */
 @media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    gap: 1rem;
-  }
+  nav { flex-direction: column; gap: 1rem; }
+  .nav-links { flex-wrap: wrap; justify-content: center; }
+  .hero h1 { font-size: 2.25rem; }
+  .proc-list { grid-template-columns: 1fr; }
+}
 
-  .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+/* ==========================================
+   11. ANIMATIONS D'APPARITION (100% CSS)
+   ========================================== */
+@keyframes apparitionHaut {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
-  .hero h1 {
-    font-size: 2.25rem;
-  }
+.card, .proc-list li {
+  opacity: 0;
+  animation: apparitionHaut 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 
-  .hero p.subtitle {
-    font-size: 1.25rem;
-  }
+/* Effet cascade Cartes */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.25s; }
+.card:nth-child(3) { animation-delay: 0.4s; }
+.card:nth-child(4) { animation-delay: 0.55s; }
+.card:nth-child(5) { animation-delay: 0.7s; }
+.card:nth-child(6) { animation-delay: 0.85s; }
+
+/* Effet cascade Procédures */
+.proc-list li:nth-child(1) { animation-delay: 0.1s; }
+.proc-list li:nth-child(2) { animation-delay: 0.2s; }
+.proc-list li:nth-child(3) { animation-delay: 0.3s; }
+.proc-list li:nth-child(4) { animation-delay: 0.4s; }
+.proc-list li:nth-child(5) { animation-delay: 0.5s; }
+.proc-list li:nth-child(6) { animation-delay: 0.6s; }
+/* Animation au survol du bouton CV */
+.nav-links a.btn-cv {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Rend l'effet "élastique" */
+}
+.nav-links a.btn-cv:hover {
+  transform: translateY(-3px) scale(1.05); /* Grossit de 5% */
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5); /* Halo bleu lumineux */
+}
+/* Animation des icônes au survol des procédures */
+.proc-list i {
+  transition: all 0.4s ease; /* Prépare l'icône à bouger en douceur */
+}
+
+.proc-list li:hover i {
+  transform: rotate(15deg) scale(1.2); /* Tourne légèrement et grossit */
+  background-color: var(--accent-color); /* Le fond devient bleu foncé */
+  color: #ffffff; /* L'icône devient blanche */
+  border-radius: 50%; /* Le carré devient un cercle ! */
+}
+/* Animation des badges de compétences */
+.badge {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.badge:hover {
+  transform: translateY(-4px) scale(1.1);
+  background-color: var(--accent-color);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
 }
