@@ -1,694 +1,2366 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tom Bernouin — Portfolio BTS SIO SISR</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <style>
+/* ==========================================
+   VARIABLES — DARK TECH THEME
+   ========================================== */
+:root {
+  --bg: #080c14;
+  --surface: #0d1320;
+  --surface-2: #111827;
+  --border: rgba(99, 179, 237, 0.12);
+  --border-bright: rgba(99, 179, 237, 0.35);
+  --text: #e2e8f0;
+  --text-dim: #64748b;
+  --text-muted: #374151;
+  --accent: #38bdf8;         /* Bleu cyan vif */
+  --accent-dim: rgba(56, 189, 248, 0.12);
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  --green: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.3);
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-display: 'Syne', sans-serif;
+}
 
+/* ==========================================
+   RESET & BASE
+   ========================================== */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* ==========================================
+   CANVAS PARTICULES
+   ========================================== */
+#particles-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ==========================================
+   GRILLE DE FOND
+   ========================================== */
+.grid-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ==========================================
+   SCANLINES (effet CRT subtil)
+   ========================================== */
+.scanlines {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(8, 12, 20, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
+
+.logo-bracket {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color 0.25s;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.nav-num {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+.btn-cv {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  font-weight: 700 !important;
+  font-family: var(--font-mono);
+  font-size: 0.8rem !important;
+  transition: all 0.25s !important;
+  letter-spacing: 0.05em;
+  gap: 0.4rem;
+}
+
+.btn-cv:hover {
+  background: #7dd3fc !important;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border-bright) !important;
+  color: var(--accent) !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  transition: all 0.25s !important;
+  gap: 0.4rem;
+}
+
+.btn-secondary:hover {
+  background: var(--accent-dim) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Menu mobile */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ==========================================
+   MAIN WRAPPER
+   ========================================== */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+section {
+  padding: 8rem 0 2rem;
+  scroll-margin-top: 80px;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 3rem;
+  letter-spacing: -0.03em;
+  position: relative;
+  display: inline-block;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 2px;
+}
+
+/* ==========================================
+   HERO
+   ========================================== */
+#hero {
+  min-height: 100vh;
+  padding-top: 100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-inner { max-width: 600px; }
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--green);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  margin-bottom: 2rem;
+  font-family: var(--font-mono);
+}
+
+.dot {
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 var(--green-glow); }
+  70%  { box-shadow: 0 0 0 7px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+.hero-title {
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.line-reveal {
+  display: block;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: revealLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.line-reveal.delay-1 { animation-delay: 0.1s; }
+
+@keyframes revealLine {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glitch effect */
+.glitch {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  color: var(--accent);
+}
+
+.glitch::before {
+  animation: glitch1 3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translateX(-2px);
+  opacity: 0.7;
+  color: #f472b6;
+}
+
+.glitch::after {
+  animation: glitch2 3s infinite;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  transform: translateX(2px);
+  opacity: 0.7;
+  color: #34d399;
+}
+
+@keyframes glitch1 {
+  0%, 95%, 100% { transform: translateX(0); opacity: 0; }
+  96% { transform: translateX(-4px); opacity: 0.7; }
+  98% { transform: translateX(2px); opacity: 0.7; }
+}
+
+@keyframes glitch2 {
+  0%, 95%, 100% { transform: translateX(0); opacity: 0; }
+  96% { transform: translateX(4px); opacity: 0.7; }
+  98% { transform: translateX(-2px); opacity: 0.7; }
+}
+
+.desc {
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  max-width: 500px;
+  margin-bottom: 3rem;
+  line-height: 1.8;
+}
+
+.desc strong { color: var(--text); }
+
+/* Stats */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.stat { text-align: center; }
+
+.stat-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+/* Scroll hint */
+.scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.scroll-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--text-muted), transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  animation: scrollAnim 2s infinite;
+}
+
+@keyframes scrollAnim {
+  to { left: 100%; }
+}
+
+/* Terminal */
+.terminal-deco {
+  background: rgba(13, 19, 32, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(56, 189, 248, 0.08), 0 20px 60px rgba(0,0,0,0.5);
+  animation: fadeIn 1s 0.5s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.term-bar {
+  background: rgba(255,255,255,0.04);
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.term-bar .dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  animation: none;
+}
+
+.term-bar .dot.red    { background: #ef4444; box-shadow: none; }
+.term-bar .dot.yellow { background: #f59e0b; box-shadow: none; }
+.term-bar .dot.green  { background: #10b981; box-shadow: none; }
+
+.term-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+.term-body {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 2;
+}
+
+.term-line { color: var(--text-dim); }
+.term-line.output { color: #94a3b8; padding-left: 1rem; }
+.prompt { color: var(--accent); margin-right: 0.5rem; }
+
+.cursor-blink {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==========================================
+   PRÉSENTATION
+   ========================================== */
+.presentation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.pres-text {
+  color: var(--text-dim);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.pres-text strong { color: var(--text); }
+
+.pres-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  cursor: default;
+}
+
+.skill-tag i { color: var(--accent); }
+
+.skill-tag:hover {
+  border-color: var(--border-bright);
+  background: var(--accent-dim);
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ==========================================
+   RÉALISATIONS
+   ========================================== */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.35s;
+  overflow: hidden;
+  cursor: default;
+}
+
+.card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, var(--accent-glow), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.project-card:hover .card-glow { opacity: 1; }
+
+.project-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-6px);
+  box-shadow: 0 0 40px rgba(56,189,248,0.1), 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.card-num {
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent-dim);
+  line-height: 1;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+  transition: color 0.3s;
+}
+
+.project-card:hover .card-num {
+  color: var(--accent);
+}
+
+.project-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.project-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+
+.badge:hover {
+  background: var(--accent);
+  color: var(--bg);
+  transform: translateY(-2px);
+}
+
+.card-arrow {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.project-card:hover .card-arrow {
+  color: var(--accent);
+  transform: translateX(4px) translateY(-4px);
+}
+
+/* ==========================================
+   RÉFÉRENTIEL
+   ========================================== */
+.skills-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.skill-row {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s;
+}
+
+.skill-row:last-child { border-bottom: none; }
+.skill-row:hover { background: rgba(56, 189, 248, 0.03); }
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.skill-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skill-pct {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.progress-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), #7dd3fc);
+  border-radius: 999px;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ==========================================
+   PROCÉDURES
+   ========================================== */
+.section-intro {
+  color: var(--text-dim);
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+}
+
+.section-intro strong { color: var(--accent); }
+
+.proc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.proc-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.proc-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.3s;
+  border-radius: 0 2px 2px 0;
+}
+
+.proc-card:hover::before { transform: scaleY(1); }
+
+.proc-card:hover {
+  border-color: var(--border-bright);
+  transform: translateX(6px);
+  background: rgba(56, 189, 248, 0.04);
+  box-shadow: 0 0 25px rgba(56,189,248,0.08);
+}
+
+.proc-icon {
+  width: 44px; height: 44px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.proc-card:hover .proc-icon {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  transform: rotate(10deg) scale(1.1);
+}
+
+.proc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.proc-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.proc-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.proc-arrow {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  transition: all 0.3s;
+}
+
+.proc-card:hover .proc-arrow { color: var(--accent); transform: translateX(4px); }
+
+/* ==========================================
+   VEILLE
+   ========================================== */
+.veille-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.veille-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.35s;
+  position: relative;
+  overflow: hidden;
+}
+
+.veille-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+
+.veille-card:hover::after { transform: scaleX(1); }
+
+.veille-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(56,189,248,0.07);
+}
+
+.veille-icon-wrap {
+  width: 52px; height: 52px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.35s;
+}
+
+.veille-card:hover .veille-icon-wrap {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.veille-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.veille-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.veille-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.veille-sources span {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 4rem 2rem;
+  text-align: center;
+  background: rgba(13, 19, 32, 0.5);
+}
+
+.footer-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.25s;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 900px) {
+  #hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 140px;
+    gap: 3rem;
+  }
+
+  .hero-inner { max-width: 100%; }
+
+  .presentation-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  nav { flex-wrap: wrap; }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .nav-links.open { display: flex; }
+
+  .menu-toggle { display: flex; }
+
+  .hero-title { font-size: 3rem; }
+
+  .hero-stats { gap: 1rem; }
+  .stat-num { font-size: 2rem; }
+
+  .terminal-deco { display: none; }
+
+  h2 { font-size: 2rem; }
+
+  section { padding: 5rem 0 1rem; }
+}
+
+/* ==========================================
+   ANIMATIONS D'APPARITION AU SCROLL
+   ========================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================
+   VEILLE — REDESIGN COMPLET
+   ========================================== */
+
+/* Pills de thématiques */
+.veille-topics {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.vtopic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+}
+
+.vtopic i { font-size: 0.8rem; }
+
+.vtopic:hover {
+  border-color: var(--border-bright);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.vtopic.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Layout principal */
+.veille-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Grande carte featured */
+.veille-featured {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.veille-featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #7dd3fc, transparent);
+  border-radius: 20px 20px 0 0;
+}
+
+.veille-featured:hover { border-color: var(--border-bright); }
+
+.vf-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.vf-icon {
+  width: 48px; height: 48px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.vf-meta { flex: 1; }
+
+.vf-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+  opacity: 0.8;
+}
+
+.vf-meta h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.vf-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--green);
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.2);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+.vf-desc {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.vf-sources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.vf-source {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.25s;
+}
+
+.vf-source:hover {
+  border-color: var(--border-bright);
+  background: var(--accent-dim);
+}
+
+.vf-source-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.vf-source-icon.gov {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+  border: 1px solid rgba(99,102,241,0.2);
+}
+
+.vf-source-icon.blog {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(56,189,248,0.2);
+}
+
+.vf-source-name {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.vf-source-desc {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.1rem;
+}
+
+.vf-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vtag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(56,189,248,0.2);
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+
+.vtag:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Colonne droite */
+.veille-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cartes mini */
+.veille-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  flex: 1;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.veille-mini:hover {
+  border-color: var(--border-bright);
+  transform: translateX(5px);
+}
+
+.veille-mini.tryhackme {
+  border-color: rgba(16,185,129,0.2);
+  background: rgba(16,185,129,0.03);
+}
+
+.veille-mini.tryhackme:hover {
+  border-color: rgba(16,185,129,0.5);
+  box-shadow: 0 0 25px rgba(16,185,129,0.08);
+}
+
+.vm-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.vm-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.vm-icon.social {
+  background: rgba(29,161,242,0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(29,161,242,0.2);
+}
+
+.vm-icon.podcast {
+  background: rgba(168,85,247,0.12);
+  color: #c084fc;
+  border: 1px solid rgba(168,85,247,0.2);
+}
+
+.vm-icon.ctf {
+  background: rgba(16,185,129,0.12);
+  color: var(--green);
+  border: 1px solid rgba(16,185,129,0.2);
+}
+
+.vm-info h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.vm-info p {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.vm-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.vm-pills span {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+/* Timeline */
+.veille-timeline {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+}
+
+.vt-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  opacity: 0.8;
+}
+
+.vt-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.vt-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.vt-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+  flex-shrink: 0;
+}
+
+.vt-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.vt-time {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vt-action {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.vt-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--border));
+  margin-bottom: 1.8rem;
+  opacity: 0.4;
+}
+
+/* Responsive veille */
+@media (max-width: 900px) {
+  .veille-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .vt-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .vt-step { flex-direction: row; align-items: flex-start; gap: 1rem; }
+  .vt-content { align-items: flex-start; text-align: left; }
+  .vt-line { width: 1px; height: 24px; background: linear-gradient(180deg, var(--accent), var(--border)); margin-left: 4px; margin-bottom: 0; }
+}
+
+/* Icônes cloud et réseau */
+.vf-icon.cloud-icon  { background: rgba(99,102,241,0.12); color: #818cf8; border-color: rgba(99,102,241,0.2); }
+.vf-icon.reseau-icon { background: rgba(16,185,129,0.12); color: var(--green); border-color: rgba(16,185,129,0.2); }
+.vm-icon.cloud-sm    { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
+
+/* Transition des panels */
+.veille-panel {
+  animation: panelFadeIn 0.35s ease both;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
 <body>
 
-    <!-- Canvas pour les particules -->
-    <canvas id="particles-canvas"></canvas>
+<!-- Canvas pour les particules -->
+<canvas id="particles-canvas"></canvas>
 
-    <!-- Grille de fond -->
-    <div class="grid-bg"></div>
+<!-- Grille de fond -->
+<div class="grid-bg"></div>
 
-    <!-- Scanline overlay -->
-    <div class="scanlines"></div>
+<!-- Scanline overlay -->
+<div class="scanlines"></div>
 
-    <header>
-        <nav>
-            <a href="#" class="logo">
-                <span class="logo-bracket">[</span>TB<span class="logo-bracket">]</span>
+<header>
+    <nav>
+        <a href="#" class="logo">
+            <span class="logo-bracket">[</span>TB<span class="logo-bracket">]</span>
+        </a>
+        <div class="nav-links">
+            <a href="#presentation"><span class="nav-num">01.</span> Présentation</a>
+            <a href="#realisations"><span class="nav-num">02.</span> Réalisations</a>
+            <a href="#referentiel"><span class="nav-num">03.</span> Référentiel</a>
+            <a href="#procedures"><span class="nav-num">04.</span> Procédures</a>
+            <a href="#veille"><span class="nav-num">05.</span> Veille</a>
+            <a href="CV_Tom_Bernouin.pdf" target="_blank" class="btn-cv">
+                <i class="fa-solid fa-download"></i> CV
             </a>
-            <div class="nav-links">
-                <a href="#presentation"><span class="nav-num">01.</span> Présentation</a>
-                <a href="#realisations"><span class="nav-num">02.</span> Réalisations</a>
-                <a href="#referentiel"><span class="nav-num">03.</span> Référentiel</a>
-                <a href="#procedures"><span class="nav-num">04.</span> Procédures</a>
-                <a href="#veille"><span class="nav-num">05.</span> Veille</a>
-                <a href="CV_Tom_Bernouin.pdf" target="_blank" class="btn-cv">
-                    <i class="fa-solid fa-download"></i> CV
-                </a>
-                <a href="tableau-competences-bernouin.pdf" target="_blank" class="btn-secondary">
-                    <i class="fa-solid fa-table"></i> E5
-                </a>
-            </div>
-            <button class="menu-toggle" id="menuToggle">
-                <span></span><span></span><span></span>
-            </button>
-        </nav>
-    </header>
-
-    <main>
-        <!-- Hero -->
-        <section id="hero" class="hero">
-            <div class="hero-inner">
-                <div class="availability-badge">
-                    <span class="dot"></span>
-                    <span class="badge-text">Disponible pour alternance</span>
-                </div>
-
-                <div class="hero-label">// PORTFOLIO BTS SIO — SISR</div>
-                <h1 class="hero-title">
-                    <span class="line-reveal">Tom</span>
-                    <span class="line-reveal delay-1">Bernouin</span>
-                </h1>
-                <p class="subtitle glitch" data-text="Futur Admin Sys &amp; Réseaux">Futur Admin Sys &amp; Réseaux</p>
-                <p class="desc">
-                    Passionné par la <strong>cybersécurité</strong>, les infrastructures réseau et les systèmes Linux.
-                    En recherche d'alternance pour une Licence STS.
-                </p>
-
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-num" data-count="8">0</span>
-                        <span class="stat-label">Procédures</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <span class="stat-num" data-count="3">0</span>
-                        <span class="stat-label">Réalisations</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <span class="stat-num" data-count="2">0</span>
-                        <span class="stat-label">Ans de formation</span>
-                    </div>
-                </div>
-
-                <div class="scroll-hint">
-                    <span>scroll</span>
-                    <div class="scroll-line"></div>
-                </div>
-            </div>
-
-            <!-- Terminal décoratif -->
-            <div class="terminal-deco">
-                <div class="term-bar">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="term-title">tom@sisr:~$</span>
-                </div>
-                <div class="term-body">
-                    <div class="term-line"><span class="prompt">$</span> whoami</div>
-                    <div class="term-line output">tom_bernouin</div>
-                    <div class="term-line"><span class="prompt">$</span> cat skills.txt</div>
-                    <div class="term-line output">Network | Linux | Windows Server</div>
-                    <div class="term-line output">Cisco IOS | AD DS | VPN | Bacula</div>
-                    <div class="term-line"><span class="prompt">$</span> echo $GOAL</div>
-                    <div class="term-line output">Administrateur Systèmes &amp; Réseaux</div>
-                    <div class="term-line"><span class="prompt">$</span> <span class="cursor-blink">_</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Présentation -->
-        <section id="presentation">
-            <div class="section-label">// 01 — PRÉSENTATION</div>
-            <h2>À propos</h2>
-            <div class="presentation-grid">
-                <div class="pres-text">
-                    <p>Actuellement en formation de <strong>BTS SIO</strong>, spécialité <strong>SISR</strong>, je
-                        construis mes compétences à travers des stages, des projets personnels et une pratique régulière
-                        du CTF sur <strong>TryHackMe</strong>.</p>
-                    <br>
-                    <p>Mon objectif professionnel est de devenir <strong>Administrateur Systèmes et Réseaux</strong>,
-                        avec un fort attrait pour la cybersécurité. J'ai acquis de solides bases dans le déploiement, la
-                        configuration et la maintenance des équipements réseau, des serveurs et des services
-                        d'infrastructure.</p>
-                    <br>
-                    <p>Je suis en recherche d'<strong>alternance pour une Licence STS</strong>.</p>
-                </div>
-                <div class="pres-skills">
-                    <div class="skill-tag"><i class="fa-solid fa-network-wired"></i> Réseaux & VLAN</div>
-                    <div class="skill-tag"><i class="fa-brands fa-linux"></i> Linux / Debian</div>
-                    <div class="skill-tag"><i class="fa-brands fa-windows"></i> Windows Server</div>
-                    <div class="skill-tag"><i class="fa-solid fa-shield-halved"></i> Cybersécurité</div>
-                    <div class="skill-tag"><i class="fa-solid fa-server"></i> AD DS / GPO</div>
-                    <div class="skill-tag"><i class="fa-solid fa-lock"></i> VPN / IPsec</div>
-                    <div class="skill-tag"><i class="fa-solid fa-database"></i> Sauvegarde Bacula</div>
-                    <div class="skill-tag"><i class="fa-solid fa-flag"></i> CTF TryHackMe</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Réalisations -->
-        <section id="realisations">
-            <div class="section-label">// 02 — RÉALISATIONS</div>
-            <h2>Projets</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-num="01">
-                    <div class="card-glow"></div>
-                    <div class="card-num">01</div>
-                    <h3>Réseau Local & VLANs</h3>
-                    <p>Conception et configuration d'une architecture réseau sécurisée intégrant des VLANs et du routage
-                        inter-VLAN pour segmenter le trafic.</p>
-                    <div class="badges">
-                        <span class="badge">Cisco IOS</span>
-                        <span class="badge">VLAN</span>
-                        <span class="badge">Routage</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
-                </div>
-                <div class="project-card" data-num="02">
-                    <div class="card-glow"></div>
-                    <div class="card-num">02</div>
-                    <h3>Déploiement Windows Server</h3>
-                    <p>Installation et configuration d'un contrôleur de domaine, gestion centralisée des utilisateurs,
-                        groupes et stratégies de groupe (GPO).</p>
-                    <div class="badges">
-                        <span class="badge">Windows Server</span>
-                        <span class="badge">AD DS</span>
-                        <span class="badge">GPO</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
-                </div>
-                <div class="project-card" data-num="03">
-                    <div class="card-glow"></div>
-                    <div class="card-num">03</div>
-                    <h3>Serveur Web & Infrastructure Linux</h3>
-                    <p>Configuration de services d'infrastructure de base et de serveurs web sous environnement Linux
-                        (Debian). DNS, Apache, DHCP.</p>
-                    <div class="badges">
-                        <span class="badge">Debian</span>
-                        <span class="badge">Bind9</span>
-                        <span class="badge">Apache</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Référentiel -->
-        <section id="referentiel">
-            <div class="section-label">// 03 — RÉFÉRENTIEL</div>
-            <h2>Compétences</h2>
-            <div class="skills-wrapper">
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Gérer le patrimoine informatique</span>
-                        <span class="skill-pct">85%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="85"></div>
-                    </div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Répondre aux incidents & demandes</span>
-                        <span class="skill-pct">80%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="80"></div>
-                    </div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Développer la présence en ligne</span>
-                        <span class="skill-pct">60%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="60"></div>
-                    </div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Travailler en mode projet</span>
-                        <span class="skill-pct">75%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="75"></div>
-                    </div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Mettre à disposition un service informatique</span>
-                        <span class="skill-pct">85%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="85"></div>
-                    </div>
-                </div>
-                <div class="skill-row">
-                    <div class="skill-info">
-                        <span class="skill-name">Organiser son développement professionnel</span>
-                        <span class="skill-pct">90%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" data-width="90"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Procédures -->
-        <section id="procedures">
-            <div class="section-label">// 04 — DOCUMENTATIONS</div>
-            <h2>Procédures</h2>
-            <div class="proc-grid">
-                <a href="Procedure DNS primaire TOM BERNOUIN .pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Configuration DNS Primaire sous Linux</span>
-                        <span class="proc-tag">Linux / DNS</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="Procédure - Configuration Windows Active Directory.pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Déploiement Windows Active Directory</span>
-                        <span class="proc-tag">Windows / AD DS</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="Copie de Samba 4 .pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Déploiement Samba 4 AD</span>
-                        <span class="proc-tag">Linux / Samba</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="TP VPN.pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Configuration Tunnel VPN IPsec</span>
-                        <span class="proc-tag">Sécurité / VPN</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="_Procédure Dhcp-Dns (1).pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Serveur DHCP + DNS</span>
-                        <span class="proc-tag">Linux / Réseau</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="Procedure_Bacula_Debian13.docx.pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Sauvegardes avec Bacula</span>
-                        <span class="proc-tag">Linux / Backup</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="Procedure service web ..pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Configuration Service Web</span>
-                        <span class="proc-tag">Apache / Web</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="Procedure_BTS_Architecture3Tiers.pdf" target="_blank" class="proc-card">
-                    <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
-                    <div class="proc-info">
-                        <span class="proc-title">Architecture 3 Tiers</span>
-                        <span class="proc-tag">Infrastructure</span>
-                    </div>
-                    <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Veille -->
-        <section id="veille">
-            <div class="section-label">// 05 — VEILLE TECHNOLOGIQUE</div>
-            <h2>Veille</h2>
-
-            <!-- Pills / onglets -->
-            <div class="veille-topics">
-                <span class="vtopic active" data-topic="cyber"><i class="fa-solid fa-shield-halved"></i>
-                    Cybersécurité</span>
-                <span class="vtopic" data-topic="cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>
-                <span class="vtopic" data-topic="reseau"><i class="fa-solid fa-network-wired"></i> Réseaux</span>
-            </div>
-
-            <!-- ===== PANEL CYBER ===== -->
-            <div class="veille-panel" data-panel="cyber">
-                <div class="veille-layout">
-                    <!-- Grande carte featured -->
-                    <div class="veille-featured">
-                        <div class="vf-header">
-                            <div class="vf-icon"><i class="fa-solid fa-rss"></i></div>
-                            <div class="vf-meta">
-                                <span class="vf-label">Source principale</span>
-                                <h3>Agrégation RSS & Feedly</h3>
-                            </div>
-                            <div class="vf-live"><span class="dot"></span> Actif</div>
-                        </div>
-                        <p class="vf-desc">Ma source quotidienne. J'agrège les flux RSS d'organismes officiels et de
-                            blogs de référence pour suivre les CVEs, alertes et vulnérabilités en temps réel.</p>
-                        <div class="vf-sources-grid">
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-solid fa-landmark"></i></div>
-                                <div><span class="vf-source-name">CERT-FR</span><span class="vf-source-desc">Alertes
-                                        officielles ANSSI</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-solid fa-shield-halved"></i></div>
-                                <div><span class="vf-source-name">ANSSI</span><span
-                                        class="vf-source-desc">Recommandations nationales</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-solid fa-bug"></i></div>
-                                <div><span class="vf-source-name">BleepingComputer</span><span
-                                        class="vf-source-desc">Actualités malware & vulns</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-solid fa-newspaper"></i></div>
-                                <div><span class="vf-source-name">The Hacker News</span><span
-                                        class="vf-source-desc">Infosec & cybercriminalité</span></div>
-                            </div>
-                        </div>
-                        <div class="vf-tags">
-                            <span class="vtag">CVE</span>
-                            <span class="vtag">Zero-day</span>
-                            <span class="vtag">Patches</span>
-                            <span class="vtag">Alertes</span>
-                        </div>
-                    </div>
-                    <!-- Colonne droite -->
-                    <div class="veille-col">
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon social"><i class="fa-brands fa-twitter"></i></div>
-                                <div class="vm-info">
-                                    <h4>Réseaux Sociaux</h4>
-                                    <p>Suivi d'experts, chercheurs et pen-testers. Découverte d'outils et PoC en temps
-                                        réel.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>Twitter / X</span><span>LinkedIn</span><span>Reddit</span></div>
-                        </div>
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon podcast"><i class="fa-solid fa-headphones"></i></div>
-                                <div class="vm-info">
-                                    <h4>Podcasts & Conférences</h4>
-                                    <p>Écoute de NoLimitSecu et visionnage de DEF CON / Black Hat pour comprendre les
-                                        menaces.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>NoLimitSecu</span><span>DEF CON</span><span>Black Hat</span>
-                            </div>
-                        </div>
-                        <div class="veille-mini tryhackme">
-                            <div class="vm-left">
-                                <div class="vm-icon ctf"><i class="fa-solid fa-flag"></i></div>
-                                <div class="vm-info">
-                                    <h4>CTF — TryHackMe</h4>
-                                    <p>Pratique régulière : reconnaissance, exploitation, post-exploitation et
-                                        forensics.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>Recon</span><span>Exploit</span><span>Forensics</span></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Timeline cyber -->
-                <div class="veille-timeline">
-                    <div class="vt-label">Routine de veille</div>
-                    <div class="vt-steps">
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Matin</span><span class="vt-action">Lecture
-                                    Feedly — CERT-FR & THN</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Semaine</span><span class="vt-action">CTF
-                                    TryHackMe & labs pratiques</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Hebdo</span><span class="vt-action">Podcast
-                                    NoLimitSecu</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Annuel</span><span
-                                    class="vt-action">Conférences DEF CON / Black Hat</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== PANEL CLOUD ===== -->
-            <div class="veille-panel" data-panel="cloud" style="display:none;">
-                <div class="veille-layout">
-                    <div class="veille-featured">
-                        <div class="vf-header">
-                            <div class="vf-icon cloud-icon"><i class="fa-solid fa-cloud"></i></div>
-                            <div class="vf-meta">
-                                <span class="vf-label">Thématique principale</span>
-                                <h3>Cloud Computing & DevOps</h3>
-                            </div>
-                            <div class="vf-live"><span class="dot"></span> Actif</div>
-                        </div>
-                        <p class="vf-desc">Suivi de l'évolution des plateformes cloud (AWS, Azure, GCP), des pratiques
-                            DevOps et des nouvelles architectures serverless et conteneurisées pour anticiper les
-                            compétences demandées.</p>
-                        <div class="vf-sources-grid">
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-brands fa-aws"></i></div>
-                                <div><span class="vf-source-name">AWS Blog</span><span class="vf-source-desc">Nouveautés
-                                        & services AWS</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-solid fa-cube"></i></div>
-                                <div><span class="vf-source-name">Azure Updates</span><span class="vf-source-desc">Mises
-                                        à jour Microsoft Azure</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-brands fa-docker"></i></div>
-                                <div><span class="vf-source-name">Docker Blog</span><span
-                                        class="vf-source-desc">Conteneurisation & orchestration</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-solid fa-layer-group"></i></div>
-                                <div><span class="vf-source-name">The New Stack</span><span class="vf-source-desc">Cloud
-                                        natif & Kubernetes</span></div>
-                            </div>
-                        </div>
-                        <div class="vf-tags">
-                            <span class="vtag">AWS</span>
-                            <span class="vtag">Docker</span>
-                            <span class="vtag">Kubernetes</span>
-                            <span class="vtag">Serverless</span>
-                        </div>
-                    </div>
-                    <div class="veille-col">
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon cloud-sm"><i class="fa-solid fa-podcast"></i></div>
-                                <div class="vm-info">
-                                    <h4>Podcasts Cloud</h4>
-                                    <p>Écoute de podcasts spécialisés cloud et infrastructure pour rester à jour sur les
-                                        tendances.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>Cloud Native Podcast</span><span>AWS Podcast</span></div>
-                        </div>
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon social"><i class="fa-brands fa-youtube"></i></div>
-                                <div class="vm-info">
-                                    <h4>Tutoriels & Labs</h4>
-                                    <p>Visionnage de démonstrations pratiques et réalisation de labs sur les services
-                                        cloud.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>YouTube</span><span>A Cloud Guru</span><span>Labs AWS</span>
-                            </div>
-                        </div>
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon ctf"><i class="fa-solid fa-certificate"></i></div>
-                                <div class="vm-info">
-                                    <h4>Certifications visées</h4>
-                                    <p>Préparation aux certifications cloud pour valider les compétences acquises.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>AWS CLF-C02</span><span>AZ-900</span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="veille-timeline">
-                    <div class="vt-label">Axes de progression Cloud</div>
-                    <div class="vt-steps">
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Bases</span><span
-                                    class="vt-action">Virtualisation & conteneurs Docker</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">IaaS</span><span class="vt-action">Services
-                                    AWS EC2, S3, VPC</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Orches.</span><span
-                                    class="vt-action">Kubernetes & orchestration</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Certif.</span><span class="vt-action">AWS
-                                    CLF-C02 / AZ-900</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== PANEL RÉSEAU ===== -->
-            <div class="veille-panel" data-panel="reseau" style="display:none;">
-                <div class="veille-layout">
-                    <div class="veille-featured">
-                        <div class="vf-header">
-                            <div class="vf-icon reseau-icon"><i class="fa-solid fa-network-wired"></i></div>
-                            <div class="vf-meta">
-                                <span class="vf-label">Thématique principale</span>
-                                <h3>Réseaux & Infrastructure</h3>
-                            </div>
-                            <div class="vf-live"><span class="dot"></span> Actif</div>
-                        </div>
-                        <p class="vf-desc">Suivi des évolutions protocolaires, des nouvelles normes réseau (Wi-Fi 7,
-                            SD-WAN) et des bonnes pratiques d'administration pour maintenir mes connaissances à niveau
-                            professionnel.</p>
-                        <div class="vf-sources-grid">
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-solid fa-building"></i></div>
-                                <div><span class="vf-source-name">Cisco Blog</span><span
-                                        class="vf-source-desc">Actualités réseau & IOS</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon gov"><i class="fa-solid fa-globe"></i></div>
-                                <div><span class="vf-source-name">Network World</span><span
-                                        class="vf-source-desc">Tendances & innovations réseau</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-solid fa-book"></i></div>
-                                <div><span class="vf-source-name">Packet Pushers</span><span
-                                        class="vf-source-desc">Podcast & articles infra réseau</span></div>
-                            </div>
-                            <div class="vf-source">
-                                <div class="vf-source-icon blog"><i class="fa-brands fa-reddit"></i></div>
-                                <div><span class="vf-source-name">r/networking</span><span
-                                        class="vf-source-desc">Communauté & troubleshooting</span></div>
-                            </div>
-                        </div>
-                        <div class="vf-tags">
-                            <span class="vtag">BGP</span>
-                            <span class="vtag">SD-WAN</span>
-                            <span class="vtag">OSPF</span>
-                            <span class="vtag">Wi-Fi 7</span>
-                        </div>
-                    </div>
-                    <div class="veille-col">
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon social"><i class="fa-solid fa-headphones"></i></div>
-                                <div class="vm-info">
-                                    <h4>Packet Pushers Podcast</h4>
-                                    <p>Podcast de référence sur les réseaux d'entreprise, le routing et le SD-WAN.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>Hebdomadaire</span><span>Routing</span><span>SD-WAN</span></div>
-                        </div>
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon podcast"><i class="fa-solid fa-laptop-code"></i></div>
-                                <div class="vm-info">
-                                    <h4>Labs Packet Tracer</h4>
-                                    <p>Pratique régulière sur Cisco Packet Tracer pour maintenir les compétences en
-                                        configuration.</p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>Packet Tracer</span><span>GNS3</span><span>Cisco</span></div>
-                        </div>
-                        <div class="veille-mini">
-                            <div class="vm-left">
-                                <div class="vm-icon ctf"><i class="fa-solid fa-certificate"></i></div>
-                                <div class="vm-info">
-                                    <h4>Certification visée</h4>
-                                    <p>Préparation au CCNA pour valider les compétences réseau à niveau professionnel.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="vm-pills"><span>CCNA 200-301</span><span>En cours</span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="veille-timeline">
-                    <div class="vt-label">Axes de progression Réseau</div>
-                    <div class="vt-steps">
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Bases</span><span class="vt-action">Modèle OSI
-                                    & protocoles TCP/IP</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">LAN</span><span class="vt-action">VLANs, STP,
-                                    agrégation de liens</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">WAN</span><span class="vt-action">Routage
-                                    dynamique OSPF & BGP</span></div>
-                        </div>
-                        <div class="vt-line"></div>
-                        <div class="vt-step">
-                            <div class="vt-dot"></div>
-                            <div class="vt-content"><span class="vt-time">Certif.</span><span class="vt-action">CCNA
-                                    200-301</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-logo">[TB]</div>
-            <div class="footer-links">
-                <a href="https://linkedin.com/in/tom-bernouin-76b705407/" target="_blank">
-                    <i class="fa-brands fa-linkedin"></i> LinkedIn
-                </a>
-                <a href="mailto:tom.bernouin@sts-sio-caen.info">
-                    <i class="fa-solid fa-envelope"></i> Email
-                </a>
-            </div>
-            <p class="footer-copy">&copy; 2026 Tom Bernouin — BTS SIO SISR</p>
+            <a href="tableau-competences-bernouin.pdf" target="_blank" class="btn-secondary">
+                <i class="fa-solid fa-table"></i> E5
+            </a>
         </div>
-    </footer>
+        <button class="menu-toggle" id="menuToggle">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+</header>
 
-    <script src="script.js" defer></script>
+<main>
+    <!-- Hero -->
+    <section id="hero" class="hero">
+        <div class="hero-inner">
+            <div class="availability-badge">
+                <span class="dot"></span>
+                <span class="badge-text">Disponible pour alternance</span>
+            </div>
+
+            <div class="hero-label">// PORTFOLIO BTS SIO — SISR</div>
+            <h1 class="hero-title">
+                <span class="line-reveal">Tom</span>
+                <span class="line-reveal delay-1">Bernouin</span>
+            </h1>
+            <p class="subtitle glitch" data-text="Futur Admin Sys &amp; Réseaux">Futur Admin Sys &amp; Réseaux</p>
+            <p class="desc">
+                Passionné par la <strong>cybersécurité</strong>, les infrastructures réseau et les systèmes Linux. 
+                En recherche d'alternance pour une Licence STS.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-num" data-count="8">0</span>
+                    <span class="stat-label">Procédures</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-num" data-count="3">0</span>
+                    <span class="stat-label">Réalisations</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-num" data-count="2">0</span>
+                    <span class="stat-label">Ans de formation</span>
+                </div>
+            </div>
+
+            <div class="scroll-hint">
+                <span>scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </div>
+
+        <!-- Terminal décoratif -->
+        <div class="terminal-deco">
+            <div class="term-bar">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <span class="term-title">tom@sisr:~$</span>
+            </div>
+            <div class="term-body">
+                <div class="term-line"><span class="prompt">$</span> whoami</div>
+                <div class="term-line output">tom_bernouin</div>
+                <div class="term-line"><span class="prompt">$</span> cat skills.txt</div>
+                <div class="term-line output">Network | Linux | Windows Server</div>
+                <div class="term-line output">Cisco IOS | AD DS | VPN | Bacula</div>
+                <div class="term-line"><span class="prompt">$</span> echo $GOAL</div>
+                <div class="term-line output">Administrateur Systèmes &amp; Réseaux</div>
+                <div class="term-line"><span class="prompt">$</span> <span class="cursor-blink">_</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Présentation -->
+    <section id="presentation">
+        <div class="section-label">// 01 — PRÉSENTATION</div>
+        <h2>À propos</h2>
+        <div class="presentation-grid">
+            <div class="pres-text">
+                <p>Actuellement en formation de <strong>BTS SIO</strong>, spécialité <strong>SISR</strong>, je construis mes compétences à travers des stages, des projets personnels et une pratique régulière du CTF sur <strong>TryHackMe</strong>.</p>
+                <br>
+                <p>Mon objectif professionnel est de devenir <strong>Administrateur Systèmes et Réseaux</strong>, avec un fort attrait pour la cybersécurité. J'ai acquis de solides bases dans le déploiement, la configuration et la maintenance des équipements réseau, des serveurs et des services d'infrastructure.</p>
+                <br>
+                <p>Je suis en recherche d'<strong>alternance pour une Licence STS</strong>.</p>
+            </div>
+            <div class="pres-skills">
+                <div class="skill-tag"><i class="fa-solid fa-network-wired"></i> Réseaux & VLAN</div>
+                <div class="skill-tag"><i class="fa-brands fa-linux"></i> Linux / Debian</div>
+                <div class="skill-tag"><i class="fa-brands fa-windows"></i> Windows Server</div>
+                <div class="skill-tag"><i class="fa-solid fa-shield-halved"></i> Cybersécurité</div>
+                <div class="skill-tag"><i class="fa-solid fa-server"></i> AD DS / GPO</div>
+                <div class="skill-tag"><i class="fa-solid fa-lock"></i> VPN / IPsec</div>
+                <div class="skill-tag"><i class="fa-solid fa-database"></i> Sauvegarde Bacula</div>
+                <div class="skill-tag"><i class="fa-solid fa-flag"></i> CTF TryHackMe</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réalisations -->
+    <section id="realisations">
+        <div class="section-label">// 02 — RÉALISATIONS</div>
+        <h2>Projets</h2>
+        <div class="projects-grid">
+            <div class="project-card" data-num="01">
+                <div class="card-glow"></div>
+                <div class="card-num">01</div>
+                <h3>Réseau Local & VLANs</h3>
+                <p>Conception et configuration d'une architecture réseau sécurisée intégrant des VLANs et du routage inter-VLAN pour segmenter le trafic.</p>
+                <div class="badges">
+                    <span class="badge">Cisco IOS</span>
+                    <span class="badge">VLAN</span>
+                    <span class="badge">Routage</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+            <div class="project-card" data-num="02">
+                <div class="card-glow"></div>
+                <div class="card-num">02</div>
+                <h3>Déploiement Windows Server</h3>
+                <p>Installation et configuration d'un contrôleur de domaine, gestion centralisée des utilisateurs, groupes et stratégies de groupe (GPO).</p>
+                <div class="badges">
+                    <span class="badge">Windows Server</span>
+                    <span class="badge">AD DS</span>
+                    <span class="badge">GPO</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+            <div class="project-card" data-num="03">
+                <div class="card-glow"></div>
+                <div class="card-num">03</div>
+                <h3>Serveur Web & Infrastructure Linux</h3>
+                <p>Configuration de services d'infrastructure de base et de serveurs web sous environnement Linux (Debian). DNS, Apache, DHCP.</p>
+                <div class="badges">
+                    <span class="badge">Debian</span>
+                    <span class="badge">Bind9</span>
+                    <span class="badge">Apache</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Référentiel -->
+    <section id="referentiel">
+        <div class="section-label">// 03 — RÉFÉRENTIEL</div>
+        <h2>Compétences</h2>
+        <div class="skills-wrapper">
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Gérer le patrimoine informatique</span>
+                    <span class="skill-pct">85%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="85"></div>
+                </div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Répondre aux incidents & demandes</span>
+                    <span class="skill-pct">80%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="80"></div>
+                </div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Développer la présence en ligne</span>
+                    <span class="skill-pct">60%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="60"></div>
+                </div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Travailler en mode projet</span>
+                    <span class="skill-pct">75%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="75"></div>
+                </div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Mettre à disposition un service informatique</span>
+                    <span class="skill-pct">85%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="85"></div>
+                </div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-info">
+                    <span class="skill-name">Organiser son développement professionnel</span>
+                    <span class="skill-pct">90%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" data-width="90"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Procédures -->
+    <section id="procedures">
+        <div class="section-label">// 04 — DOCUMENTATIONS</div>
+        <h2>Procédures</h2>
+        <div class="proc-grid">
+            <a href="Procedure DNS primaire TOM BERNOUIN .pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Configuration DNS Primaire sous Linux</span>
+                    <span class="proc-tag">Linux / DNS</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="Procédure - Configuration Windows Active Directory.pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Déploiement Windows Active Directory</span>
+                    <span class="proc-tag">Windows / AD DS</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="Copie de Samba 4 .pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Déploiement Samba 4 AD</span>
+                    <span class="proc-tag">Linux / Samba</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="TP VPN.pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Configuration Tunnel VPN IPsec</span>
+                    <span class="proc-tag">Sécurité / VPN</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="_Procédure Dhcp-Dns (1).pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Serveur DHCP + DNS</span>
+                    <span class="proc-tag">Linux / Réseau</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="Procedure_Bacula_Debian13.docx.pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Sauvegardes avec Bacula</span>
+                    <span class="proc-tag">Linux / Backup</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="Procedure service web ..pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Configuration Service Web</span>
+                    <span class="proc-tag">Apache / Web</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+            <a href="Procedure_BTS_Architecture3Tiers.pdf" target="_blank" class="proc-card">
+                <div class="proc-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="proc-info">
+                    <span class="proc-title">Architecture 3 Tiers</span>
+                    <span class="proc-tag">Infrastructure</span>
+                </div>
+                <div class="proc-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Veille -->
+    <section id="veille">
+        <div class="section-label">// 05 — VEILLE TECHNOLOGIQUE</div>
+        <h2>Veille</h2>
+
+        <!-- Pills / onglets -->
+        <div class="veille-topics">
+            <span class="vtopic active" data-topic="cyber"><i class="fa-solid fa-shield-halved"></i> Cybersécurité</span>
+            <span class="vtopic" data-topic="cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>
+            <span class="vtopic" data-topic="reseau"><i class="fa-solid fa-network-wired"></i> Réseaux</span>
+        </div>
+
+        <!-- ===== PANEL CYBER ===== -->
+        <div class="veille-panel" data-panel="cyber">
+            <div class="veille-layout">
+                <!-- Grande carte featured -->
+                <div class="veille-featured">
+                    <div class="vf-header">
+                        <div class="vf-icon"><i class="fa-solid fa-rss"></i></div>
+                        <div class="vf-meta">
+                            <span class="vf-label">Source principale</span>
+                            <h3>Agrégation RSS & Feedly</h3>
+                        </div>
+                        <div class="vf-live"><span class="dot"></span> Actif</div>
+                    </div>
+                    <p class="vf-desc">Ma source quotidienne. J'agrège les flux RSS d'organismes officiels et de blogs de référence pour suivre les CVEs, alertes et vulnérabilités en temps réel.</p>
+                    <div class="vf-sources-grid">
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-solid fa-landmark"></i></div>
+                            <div><span class="vf-source-name">CERT-FR</span><span class="vf-source-desc">Alertes officielles ANSSI</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div><span class="vf-source-name">ANSSI</span><span class="vf-source-desc">Recommandations nationales</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-solid fa-bug"></i></div>
+                            <div><span class="vf-source-name">BleepingComputer</span><span class="vf-source-desc">Actualités malware & vulns</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-solid fa-newspaper"></i></div>
+                            <div><span class="vf-source-name">The Hacker News</span><span class="vf-source-desc">Infosec & cybercriminalité</span></div>
+                        </div>
+                    </div>
+                    <div class="vf-tags">
+                        <span class="vtag">CVE</span>
+                        <span class="vtag">Zero-day</span>
+                        <span class="vtag">Patches</span>
+                        <span class="vtag">Alertes</span>
+                    </div>
+                </div>
+                <!-- Colonne droite -->
+                <div class="veille-col">
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon social"><i class="fa-brands fa-twitter"></i></div>
+                            <div class="vm-info">
+                                <h4>Réseaux Sociaux</h4>
+                                <p>Suivi d'experts, chercheurs et pen-testers. Découverte d'outils et PoC en temps réel.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>Twitter / X</span><span>LinkedIn</span><span>Reddit</span></div>
+                    </div>
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon podcast"><i class="fa-solid fa-headphones"></i></div>
+                            <div class="vm-info">
+                                <h4>Podcasts & Conférences</h4>
+                                <p>Écoute de NoLimitSecu et visionnage de DEF CON / Black Hat pour comprendre les menaces.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>NoLimitSecu</span><span>DEF CON</span><span>Black Hat</span></div>
+                    </div>
+                    <div class="veille-mini tryhackme">
+                        <div class="vm-left">
+                            <div class="vm-icon ctf"><i class="fa-solid fa-flag"></i></div>
+                            <div class="vm-info">
+                                <h4>CTF — TryHackMe</h4>
+                                <p>Pratique régulière : reconnaissance, exploitation, post-exploitation et forensics.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>Recon</span><span>Exploit</span><span>Forensics</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Timeline cyber -->
+            <div class="veille-timeline">
+                <div class="vt-label">Routine de veille</div>
+                <div class="vt-steps">
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Matin</span><span class="vt-action">Lecture Feedly — CERT-FR & THN</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Semaine</span><span class="vt-action">CTF TryHackMe & labs pratiques</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Hebdo</span><span class="vt-action">Podcast NoLimitSecu</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Annuel</span><span class="vt-action">Conférences DEF CON / Black Hat</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PANEL CLOUD ===== -->
+        <div class="veille-panel" data-panel="cloud" style="display:none;">
+            <div class="veille-layout">
+                <div class="veille-featured">
+                    <div class="vf-header">
+                        <div class="vf-icon cloud-icon"><i class="fa-solid fa-cloud"></i></div>
+                        <div class="vf-meta">
+                            <span class="vf-label">Thématique principale</span>
+                            <h3>Cloud Computing & DevOps</h3>
+                        </div>
+                        <div class="vf-live"><span class="dot"></span> Actif</div>
+                    </div>
+                    <p class="vf-desc">Suivi de l'évolution des plateformes cloud (AWS, Azure, GCP), des pratiques DevOps et des nouvelles architectures serverless et conteneurisées pour anticiper les compétences demandées.</p>
+                    <div class="vf-sources-grid">
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-brands fa-aws"></i></div>
+                            <div><span class="vf-source-name">AWS Blog</span><span class="vf-source-desc">Nouveautés & services AWS</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-solid fa-cube"></i></div>
+                            <div><span class="vf-source-name">Azure Updates</span><span class="vf-source-desc">Mises à jour Microsoft Azure</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-brands fa-docker"></i></div>
+                            <div><span class="vf-source-name">Docker Blog</span><span class="vf-source-desc">Conteneurisation & orchestration</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-solid fa-layer-group"></i></div>
+                            <div><span class="vf-source-name">The New Stack</span><span class="vf-source-desc">Cloud natif & Kubernetes</span></div>
+                        </div>
+                    </div>
+                    <div class="vf-tags">
+                        <span class="vtag">AWS</span>
+                        <span class="vtag">Docker</span>
+                        <span class="vtag">Kubernetes</span>
+                        <span class="vtag">Serverless</span>
+                    </div>
+                </div>
+                <div class="veille-col">
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon cloud-sm"><i class="fa-solid fa-podcast"></i></div>
+                            <div class="vm-info">
+                                <h4>Podcasts Cloud</h4>
+                                <p>Écoute de podcasts spécialisés cloud et infrastructure pour rester à jour sur les tendances.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>Cloud Native Podcast</span><span>AWS Podcast</span></div>
+                    </div>
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon social"><i class="fa-brands fa-youtube"></i></div>
+                            <div class="vm-info">
+                                <h4>Tutoriels & Labs</h4>
+                                <p>Visionnage de démonstrations pratiques et réalisation de labs sur les services cloud.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>YouTube</span><span>A Cloud Guru</span><span>Labs AWS</span></div>
+                    </div>
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon ctf"><i class="fa-solid fa-certificate"></i></div>
+                            <div class="vm-info">
+                                <h4>Certifications visées</h4>
+                                <p>Préparation aux certifications cloud pour valider les compétences acquises.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>AWS CLF-C02</span><span>AZ-900</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="veille-timeline">
+                <div class="vt-label">Axes de progression Cloud</div>
+                <div class="vt-steps">
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Bases</span><span class="vt-action">Virtualisation & conteneurs Docker</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">IaaS</span><span class="vt-action">Services AWS EC2, S3, VPC</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Orches.</span><span class="vt-action">Kubernetes & orchestration</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Certif.</span><span class="vt-action">AWS CLF-C02 / AZ-900</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PANEL RÉSEAU ===== -->
+        <div class="veille-panel" data-panel="reseau" style="display:none;">
+            <div class="veille-layout">
+                <div class="veille-featured">
+                    <div class="vf-header">
+                        <div class="vf-icon reseau-icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <div class="vf-meta">
+                            <span class="vf-label">Thématique principale</span>
+                            <h3>Réseaux & Infrastructure</h3>
+                        </div>
+                        <div class="vf-live"><span class="dot"></span> Actif</div>
+                    </div>
+                    <p class="vf-desc">Suivi des évolutions protocolaires, des nouvelles normes réseau (Wi-Fi 7, SD-WAN) et des bonnes pratiques d'administration pour maintenir mes connaissances à niveau professionnel.</p>
+                    <div class="vf-sources-grid">
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-solid fa-building"></i></div>
+                            <div><span class="vf-source-name">Cisco Blog</span><span class="vf-source-desc">Actualités réseau & IOS</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon gov"><i class="fa-solid fa-globe"></i></div>
+                            <div><span class="vf-source-name">Network World</span><span class="vf-source-desc">Tendances & innovations réseau</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-solid fa-book"></i></div>
+                            <div><span class="vf-source-name">Packet Pushers</span><span class="vf-source-desc">Podcast & articles infra réseau</span></div>
+                        </div>
+                        <div class="vf-source">
+                            <div class="vf-source-icon blog"><i class="fa-brands fa-reddit"></i></div>
+                            <div><span class="vf-source-name">r/networking</span><span class="vf-source-desc">Communauté & troubleshooting</span></div>
+                        </div>
+                    </div>
+                    <div class="vf-tags">
+                        <span class="vtag">BGP</span>
+                        <span class="vtag">SD-WAN</span>
+                        <span class="vtag">OSPF</span>
+                        <span class="vtag">Wi-Fi 7</span>
+                    </div>
+                </div>
+                <div class="veille-col">
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon social"><i class="fa-solid fa-headphones"></i></div>
+                            <div class="vm-info">
+                                <h4>Packet Pushers Podcast</h4>
+                                <p>Podcast de référence sur les réseaux d'entreprise, le routing et le SD-WAN.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>Hebdomadaire</span><span>Routing</span><span>SD-WAN</span></div>
+                    </div>
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon podcast"><i class="fa-solid fa-laptop-code"></i></div>
+                            <div class="vm-info">
+                                <h4>Labs Packet Tracer</h4>
+                                <p>Pratique régulière sur Cisco Packet Tracer pour maintenir les compétences en configuration.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>Packet Tracer</span><span>GNS3</span><span>Cisco</span></div>
+                    </div>
+                    <div class="veille-mini">
+                        <div class="vm-left">
+                            <div class="vm-icon ctf"><i class="fa-solid fa-certificate"></i></div>
+                            <div class="vm-info">
+                                <h4>Certification visée</h4>
+                                <p>Préparation au CCNA pour valider les compétences réseau à niveau professionnel.</p>
+                            </div>
+                        </div>
+                        <div class="vm-pills"><span>CCNA 200-301</span><span>En cours</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="veille-timeline">
+                <div class="vt-label">Axes de progression Réseau</div>
+                <div class="vt-steps">
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Bases</span><span class="vt-action">Modèle OSI & protocoles TCP/IP</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">LAN</span><span class="vt-action">VLANs, STP, agrégation de liens</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">WAN</span><span class="vt-action">Routage dynamique OSPF & BGP</span></div></div>
+                    <div class="vt-line"></div>
+                    <div class="vt-step"><div class="vt-dot"></div><div class="vt-content"><span class="vt-time">Certif.</span><span class="vt-action">CCNA 200-301</span></div></div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-logo">[TB]</div>
+        <div class="footer-links">
+            <a href="https://linkedin.com/in/tom-bernouin-76b705407/" target="_blank">
+                <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="mailto:tom.bernouin@sts-sio-caen.info">
+                <i class="fa-solid fa-envelope"></i> Email
+            </a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Tom Bernouin — BTS SIO SISR</p>
+    </div>
+</footer>
+
+<script>
+/* ==========================================
+   SCRIPT.JS — Animations & Interactions
+   ========================================== */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+// ---- PARTICULES INTERACTIVES ----
+(function initParticles() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+
+  const mouse = { x: -9999, y: -9999, active: false };
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+  window.addEventListener('mouseleave', () => { mouse.active = false; });
+
+  const PARTICLE_COUNT = 80;
+  const MOUSE_RADIUS = 140;
+  const particles = [];
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.8 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.5 + 0.15,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Halo lumineux autour du curseur
+    if (mouse.active) {
+      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS * 1.5);
+      grd.addColorStop(0, 'rgba(56, 189, 248, 0.08)');
+      grd.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, MOUSE_RADIUS * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Connexions
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Ligne vers le curseur si proche
+      if (mouse.active) {
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < MOUSE_RADIUS) {
+          const opacity = 0.3 * (1 - mdist / MOUSE_RADIUS);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${opacity})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = p.x - particles[j].x;
+        const dy = p.y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.strokeStyle = `rgba(56, 189, 248, ${0.07 * (1 - dist / 120)})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Points + physique souris
+    particles.forEach(p => {
+      // Répulsion curseur
+      if (mouse.active) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MOUSE_RADIUS && dist > 0) {
+          const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+          p.vx += (dx / dist) * force * 0.18;
+          p.vy += (dy / dist) * force * 0.18;
+        }
+      }
+
+      // Friction + vitesse max
+      p.vx *= 0.97;
+      p.vy *= 0.97;
+      const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+      if (speed > 3) { p.vx *= 3 / speed; p.vy *= 3 / speed; }
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Glow si la particule va vite
+      const dynamicAlpha = Math.min(p.alpha + speed * 0.12, 1);
+      if (speed > 0.8) { ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(56, 189, 248, 0.9)'; }
+      else { ctx.shadowBlur = 0; }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(56, 189, 248, ${dynamicAlpha})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener('resize', () => {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  });
+})();
+
+// ---- COMPTEURS ANIMÉS ----
+function animateCounter(el) {
+  const target = parseInt(el.dataset.count, 10);
+  const duration = 1500;
+  const start = performance.now();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
+// ---- BARRES DE PROGRESSION ----
+function animateProgress(bar) {
+  const width = bar.dataset.width;
+  setTimeout(() => {
+    bar.style.width = width + '%';
+  }, 200);
+}
+
+// ---- SCROLL REVEAL ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+
+      // Compteurs
+      entry.target.querySelectorAll('[data-count]').forEach(el => animateCounter(el));
+
+      // Barres
+      entry.target.querySelectorAll('.progress-fill').forEach(bar => animateProgress(bar));
+
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.project-card, .skill-row, .proc-card, .veille-card, .veille-featured, .veille-mini, .veille-timeline, .skill-tag, .pres-text, .pres-skills, .hero-stats, .terminal-deco').forEach(el => {
+  el.classList.add('reveal');
+  observer.observe(el);
+});
+
+// Observer pour hero stats (compteurs)
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) {
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('[data-count]').forEach(el => animateCounter(el));
+        statsObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  statsObserver.observe(heroStats);
+}
+
+// Délai en cascade pour les cartes
+document.querySelectorAll('.project-card, .proc-card, .veille-card, .skill-tag').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.07}s`;
+});
+
+// ---- ONGLETS VEILLE ----
+const vtopics = document.querySelectorAll('.vtopic');
+const vpanels = document.querySelectorAll('.veille-panel');
+
+vtopics.forEach(pill => {
+  pill.addEventListener('click', () => {
+    const target = pill.dataset.topic;
+
+    // Maj pills
+    vtopics.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+
+    // Maj panels
+    vpanels.forEach(panel => {
+      if (panel.dataset.panel === target) {
+        panel.style.display = 'block';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ---- MENU MOBILE ----
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.querySelector('.nav-links');
+
+if (menuToggle && navLinks) {
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+}
+
+// ---- EFFET PARALLAXE LÉGER SUR LE HERO ----
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const hero = document.querySelector('.hero-inner');
+  if (hero && scrolled < window.innerHeight) {
+    hero.style.transform = `translateY(${scrolled * 0.15}px)`;
+    hero.style.opacity = 1 - scrolled / 700;
+  }
+});
+
+// ---- CURSOR CUSTOM (desktop seulement) ----
+if (window.innerWidth > 768) {
+  const dot = document.createElement('div');
+  dot.style.cssText = `
+    position: fixed; width: 8px; height: 8px;
+    background: #38bdf8; border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+    mix-blend-mode: screen;
+  `;
+
+  const ring = document.createElement('div');
+  ring.style.cssText = `
+    position: fixed; width: 30px; height: 30px;
+    border: 1px solid rgba(56,189,248,0.4); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  `;
+
+  document.body.appendChild(dot);
+  document.body.appendChild(ring);
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button, .project-card, .veille-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '50px';
+      ring.style.height = '50px';
+      ring.style.borderColor = 'rgba(56,189,248,0.8)';
+      dot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '30px';
+      ring.style.height = '30px';
+      ring.style.borderColor = 'rgba(56,189,248,0.4)';
+      dot.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+  });
+}
+
+}); // fin DOMContentLoaded
+
+</script>
 </body>
-
 </html>
